@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Products{% endblock %}
+
+{% block style %}
+<style>
+.product-description {
+    height: 50px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div class="container">
+    <div class="row">
+    	<div class="col-md-12">
+            {% for product in products %}
+			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail" >
+					<h4 class="text-center"><span class="label label-info">{{ product.category.name }}</span></h4>
+					<div class="caption">
+						<div class="row">
+							<div class="col-md-6 col-xs-6">
+								<h3>{{ product.name }}</h3>
+							</div>
+							<div class="col-md-6 col-xs-6 price">
+								<h3>
+								<label>AED{{ product.price }}</label></h3>
+							</div>
+						</div>
+						<p class="product-description">{{ product.description }}</p>
+						<div class="row">
+							<div class="col-md-6">
+								<a class="btn btn-primary btn-product"><span class="glyphicon glyphicon-thumbs-up"></span> Like</a>
+							</div>
+							<div class="col-md-6">
+								<a href="#" class="buy btn btn-success btn-product" data-id="{{ product.id }}"><span class="glyphicon glyphicon-shopping-cart"></span> Buy</a></div>
+						</div>
+
+						<p> </p>
+					</div>
+				</div>
+			</div>
+            {% endfor %}
+        </div>
+	</div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+	$(".buy").on("click", function() {
+		var product_id = $(this).attr("data-id");
+        $.ajax({
+            type: 'GET',
+            url: "{% url 'commercial:products-buy' 0 %}".replace('0', product_id),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log("Success");
+                window.location.reload();
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
+
+	});
+</script>
+{% endblock %}
