@@ -75,14 +75,17 @@ class ProductView(TemplateView):
 
 def product_import(request):
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method == "POST":
-        product_resource = ProductResource()
-        dataset = Dataset()
         new_products = request.FILES['file']
-        imported_data = dataset.load(new_products.read())
-        result = product_resource.import_data(dataset, dry_run=True)
+        product_resource = ProductResource()
+        dataset = Dataset().load(new_products.read())
+        try:
+            result = product_resource.import_data(dataset, dry_run=True, raise_errors=True)
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=400)
         if not result.has_errors():
             product_resource.import_data(dataset, dry_run=False)
             return JsonResponse({"success": True}, status=200)
+        print(result)
     return JsonResponse({"error": ""}, status=400)
 
 

@@ -93,8 +93,12 @@ $(document).ready(function() {
                 console.log("Success");
                 window.location.reload();
             },
-            error: function(response) {
-                console.log(response);
+            error: function(xhr, ajaxOptions, thrownError) {
+                $("#import_product").modal('hide');
+                error_message = xhr.responseJSON;
+                alert(error_message.error);
+                console.log(error_message);
+                console.log(error_message.error);
             }
         });
     });
